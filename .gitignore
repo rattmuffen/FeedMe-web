@@ -1,0 +1,11 @@
+/test-classes
+/.gwt
+/.settings
+/gwt-unitCache
+/test
+/war/feedme_web
+/war/WEB-INF
+.classpath
+.project
+/src/META-INF/
+/src/log4j.properties

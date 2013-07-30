@@ -1,0 +1,69 @@
+h1 {
+	font-size: 48px;
+	font-weight: 400;
+	color: #777777;
+	font-family: 'Pacifico', cursive;
+	margin: 20px 0px 20px 0px;
+	text-align: center;
+}
+
+.menu {
+	border-right: 2px dotted lightgray;
+	margin: 40px 0px 20px 10px;
+}
+
+.list {
+	float: left;
+}
+
+.addButton {
+	font-family: 'Roboto', cursive !important;
+	display: block;
+	font-size: 16pt;
+}
+
+.serverResponseLabelError {
+	color: red;
+}
+
+#feedTitle {
+	font-size: 36px;
+	font-family: 'Roboto', bold;
+	text-align: center;
+	color: #777777;
+}
+
+#rssContent {
+	float: left;
+	height: 900px;
+	width: 80%;
+	overflow: auto;
+}
+
+#rssEntry {
+	margin: 20px 20px 10px 20px;
+	float: left;
+}
+
+#rssTitle {
+	font-size: 20px;
+	font-family: 'Roboto', bold;
+}
+
+#rssDetails {
+	font-size: 12px;
+	font-family: 'Roboto', bold;
+	color: gray;
+}
+
+#rssDescription {
+	font-size: 14px;
+	font-family: 'Roboto', bold;;
+}
+
+#creds {
+	font-size: 14px;
+	text-align: center;
+	font-family: 'Roboto', bold !important;
+	color: lightgray;
+}
