@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Feed implements Serializable{
+public class Feed implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 	
@@ -19,6 +19,8 @@ public class Feed implements Serializable{
 	public String image;
 
 	public String link;
+
+	public String url;
 	
 	public Feed() {
 		entries = new ArrayList<FeedEntry>();
@@ -35,5 +37,4 @@ public class Feed implements Serializable{
 	public String getDescription() {
 		return description==null ? title : description;
 	}
-
 }

@@ -1,4 +1,4 @@
-package st.rattmuffen.feedme.client;
+package st.rattmuffen.feedme.client.ui;
 
 import st.rattmuffen.feedme.shared.FeedEntry;
 

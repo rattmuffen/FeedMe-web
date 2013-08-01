@@ -16,14 +16,30 @@ h1 {
 	float: left;
 }
 
+.feedList {
+	float: left;
+}
+
 .addButton {
 	font-family: 'Roboto', cursive !important;
 	display: block;
 	font-size: 16pt;
 }
 
+.removeButton {
+	margin: 20px 10px 0px 10px;
+}
+
 .serverResponseLabelError {
 	color: red;
+}
+
+#feedListEntry {
+	margin: 10px 0px 10px 0px;
+	font-size: 16px;
+	font-family: 'Roboto', bold;
+	text-align: left;
+	color: #777777;
 }
 
 #feedTitle {

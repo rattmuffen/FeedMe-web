@@ -9,3 +9,6 @@
 .project
 /src/META-INF/
 /src/log4j.properties
+/test-classes
+/test-classes
+/test-classes

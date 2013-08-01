@@ -1,15 +1,18 @@
-package st.rattmuffen.feedme.client;
+package st.rattmuffen.feedme.client.ui;
+
+import st.rattmuffen.feedme.client.FeedMe_web;
 
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.dom.client.KeyCodes;
 import com.google.gwt.event.dom.client.KeyUpEvent;
 import com.google.gwt.event.dom.client.KeyUpHandler;
+import com.google.gwt.user.client.ui.Widget;
 
 public class InputHandler implements ClickHandler, KeyUpHandler {
-	
+
 	FeedMe_web controller;
-	
+
 	public InputHandler(FeedMe_web parent) {
 		controller = parent;
 	}
@@ -27,10 +30,19 @@ public class InputHandler implements ClickHandler, KeyUpHandler {
 
 	@Override
 	public void onClick(ClickEvent event) {
-		try {
-			controller.sendAddressToServer();
-		} catch (Exception e) {
-			e.printStackTrace();
+		Widget sender = (Widget) event.getSource();
+
+		System.out.println(sender.getStyleName());
+
+		if (sender.getStyleName().equals("gwt-Button removeButton")) {
+			controller.removeFeed(controller.panel.currentFeed);
+			controller.setFeed(null);
+		} else {
+			try {
+				controller.sendAddressToServer();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 

@@ -31,9 +31,11 @@ public class RssServiceImpl extends RemoteServiceServlet implements RssService {
 			SyndFeed syndFeed = input.build(is);
 			
 			f.title = syndFeed.getTitle();
+			f.url = address;
 			f.description = syndFeed.getDescription();
 			f.language = syndFeed.getLanguage();
 			f.link = syndFeed.getLink();
+			
 			if (syndFeed.getImage() != null)
 				f.image = syndFeed.getImage().getUrl();
 			
@@ -51,13 +53,11 @@ public class RssServiceImpl extends RemoteServiceServlet implements RssService {
 				f.addEntry(fe);
 			}
 			
-		} catch (IllegalArgumentException e) {
+		} catch (Exception e) {
 			e.printStackTrace();
-		} catch (FeedException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
+			throw new IllegalArgumentException(e.getMessage());
 		}
+		
 
 		return f;
 	}
