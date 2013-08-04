@@ -3,8 +3,15 @@ h1 {
 	font-weight: 400;
 	color: #777777;
 	font-family: 'Pacifico', cursive;
-	margin: 20px 0px 20px 0px;
+	margin: 20px 0px 0px 0px;
 	text-align: center;
+}
+
+.center {
+	text-align: center;
+	float: none;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .menu {
@@ -24,17 +31,14 @@ h1 {
 	font-family: 'Roboto', cursive !important;
 	display: block;
 	font-size: 16pt;
-}
-
-.removeButton {
-	margin: 20px 10px 0px 10px;
+	margin: 0px 0px 10px 0px;
 }
 
 .serverResponseLabelError {
 	color: red;
 }
 
-#feedListEntry {
+.feedListEntry {
 	margin: 10px 0px 10px 0px;
 	font-size: 16px;
 	font-family: 'Roboto', bold;
@@ -82,4 +86,5 @@ h1 {
 	text-align: center;
 	font-family: 'Roboto', bold !important;
 	color: lightgray;
+	margin: 0px 0px 0px 0px;
 }

@@ -3,10 +3,9 @@ package st.rattmuffen.feedme.client.ui;
 import st.rattmuffen.feedme.client.FeedMe_web;
 import st.rattmuffen.feedme.shared.Feed;
 import st.rattmuffen.feedme.shared.FeedEntry;
+import st.rattmuffen.feedme.shared.FieldVerifier;
 
 import com.google.gwt.dom.client.Style.Unit;
-import com.google.gwt.event.dom.client.ClickEvent;
-import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
 import com.google.gwt.user.cellview.client.CellList;
@@ -29,9 +28,11 @@ public class MainPanel extends DockLayoutPanel {
 	ScrollPanel sp;
 	HorizontalPanel titlePanel;
 
-	public Button addButton,removeButton;
+	public Button addButton,showAllButton,removeAllButton;
 	public TextBox addressField;
 	public Label errorLabel;
+	
+	public InputHandler handler;
 
 	public FeedList feedList;
 
@@ -42,37 +43,50 @@ public class MainPanel extends DockLayoutPanel {
 	public MainPanel(FeedMe_web c) {
 		super(Unit.PX);
 		controller = c;
+		
+		handler = new InputHandler(this);
 	}
 	
 	public void createAndShowGUI() {
 		addButton = new Button("Add feed");
 		addButton.addStyleName("addButton");
-		addButton.addClickHandler(controller.handler);
+		addButton.addClickHandler(handler);
+		
+		showAllButton = new Button("Show all feeds");
+		showAllButton.addClickHandler(handler);
+		
+		removeAllButton = new Button("Remove all feeds");
+		removeAllButton.addClickHandler(handler);
 
 		addressField = new TextBox();
-		addressField.addKeyUpHandler(controller.handler);
-		
-		removeButton = new Button("Remove feed");
-		removeButton.addStyleName("removeButton");
+		addressField.addKeyUpHandler(handler);
 
 		feedList = new FeedList(controller,controller.feeds);
 
 		menuPanel = new VerticalPanel();
 		menuPanel.setSpacing(4);
 		menuPanel.add(new HTML("<h1>FeedMe</h1>"));
+		menuPanel.add(new HTML("<div id=\"creds\">by <a href=\"https://twitter.com/rattmuffen\">@rattmuffen</a></div>"));
 
 		HorizontalPanel hp = new HorizontalPanel();
+		hp.addStyleName("center");
 		hp.setSpacing(4);
 		hp.add(addressField);
 		hp.add(addButton);
+		
+		HorizontalPanel hp2 = new HorizontalPanel();
+		hp2.addStyleName("center");
+		hp2.setSpacing(4);
+		hp2.add(showAllButton);
+		hp2.add(removeAllButton);
 
 		menuPanel.add(hp);
+		menuPanel.add(hp2);
 		menuPanel.add(feedList);
 
 		errorLabel = new Label();
 		errorLabel.addStyleName("serverResponseLabelError");
 		
-		menuPanel.add(new HTML("<div id=\"creds\">by <a href=\"https://twitter.com/rattmuffen\">@rattmuffen</a></div>"));
 		menuPanel.add(errorLabel);
 		menuPanel.addStyleName("menu");
 
@@ -99,13 +113,9 @@ public class MainPanel extends DockLayoutPanel {
 		currentFeed = f;
 
 		titlePanel = new HorizontalPanel();
-		removeButton = new Button("Remove feed");
-		removeButton.addStyleName("removeButton");
-		removeButton.addClickHandler(controller.handler);
 		
 		HTML title = new HTML("<div id=\"feedTitle\"><img src=\"" + f.getImage() + "\" />" + 
 				f.getDescription() + "</div>");
-		titlePanel.add(removeButton);
 		titlePanel.add(title);
 
 		EntryCell cell = new EntryCell(); 
@@ -124,11 +134,31 @@ public class MainPanel extends DockLayoutPanel {
 		errorLabel.setText(string);
 		addButton.setEnabled(true);
 	}
+	
+	public void sendAddressToServer() throws IllegalArgumentException {
+		errorLabel.setText("");
+
+		String textToServer = addressField.getText();
+		if (!FieldVerifier.isValidAddress(textToServer)) {
+			errorLabel.setText("Please enter a valid address.");
+			return;
+		}
+		controller.sendAddressToServer(textToServer);
+	}
 
 	public void setEmpty() {
 		if (sp!=null)
 			this.remove(sp);
 		if (titlePanel != null)
 			this.remove(titlePanel);
+	}
+
+	public void removeAllFeeds() {
+		controller.removeAllFeeds();
+		setEmpty();
+	}
+
+	public void showAllFeeds() {
+		controller.showAllFeeds();
 	}
 }

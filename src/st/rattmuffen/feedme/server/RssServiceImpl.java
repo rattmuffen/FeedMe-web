@@ -1,7 +1,7 @@
 package st.rattmuffen.feedme.server;
 
-import java.io.IOException;
 import java.net.URL;
+import java.util.Date;
 
 import org.xml.sax.InputSource;
 
@@ -12,15 +12,16 @@ import st.rattmuffen.feedme.shared.FeedEntry;
 import com.google.gwt.user.server.rpc.RemoteServiceServlet;
 import com.sun.syndication.feed.synd.SyndEntryImpl;
 import com.sun.syndication.feed.synd.SyndFeed;
-import com.sun.syndication.io.FeedException;
 import com.sun.syndication.io.SyndFeedInput;
 import com.sun.syndication.io.XmlReader;
 
 @SuppressWarnings("serial")
 public class RssServiceImpl extends RemoteServiceServlet implements RssService {
 
-	public Feed getFeed(String address) throws IllegalArgumentException {
+	public Feed getFeed(String address, Date d) throws IllegalArgumentException {
 		Feed f = new Feed();
+		
+		System.out.println("getting " + address);
 		
         try {
     		URL feedSource = new URL(address);
@@ -35,6 +36,7 @@ public class RssServiceImpl extends RemoteServiceServlet implements RssService {
 			f.description = syndFeed.getDescription();
 			f.language = syndFeed.getLanguage();
 			f.link = syndFeed.getLink();
+			f.unread = 0;
 			
 			if (syndFeed.getImage() != null)
 				f.image = syndFeed.getImage().getUrl();
@@ -49,6 +51,11 @@ public class RssServiceImpl extends RemoteServiceServlet implements RssService {
 				fe.link = syndEntry.getLink();
 				if (syndFeed.getDescription() != null)
 					fe.description = syndEntry.getDescription().getValue();
+				
+				if (fe.date != null &&
+						fe.date.after(d)) {
+					f.unread++;
+				}
 				
 				f.addEntry(fe);
 			}

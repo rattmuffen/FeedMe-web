@@ -1,0 +1,11 @@
+.cellTableSelectedRow {
+  background: #C4C4C4;
+  color: white;
+  height: auto;
+  overflow: auto;
+  border: none;
+}
+
+.cellTableSelectedRowCell {
+  border: selectionBorderWidth solid #C4C4C4;
+}
