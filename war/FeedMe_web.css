@@ -34,14 +34,26 @@ h1 {
 	margin: 0px 0px 10px 0px;
 }
 
+.popup {
+	font-family: 'Roboto', cursive !important;
+}
+
 .serverResponseLabelError {
 	color: red;
 }
 
+.feedIconListEntry {
+	min-height: 16 px;
+	min-width: 16 px;
+	
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .feedListEntry {
-	margin: 10px 0px 10px 0px;
 	font-size: 16px;
-	font-family: 'Roboto', bold;
+	font-family: 'Roboto', bold !important;
 	text-align: left;
 	color: #777777;
 }
@@ -78,7 +90,7 @@ h1 {
 
 #rssDescription {
 	font-size: 14px;
-	font-family: 'Roboto', bold;;
+	font-family: 'Roboto', bold;
 }
 
 #creds {

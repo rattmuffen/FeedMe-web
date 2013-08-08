@@ -18,14 +18,14 @@ public class WebStorage {
 		return (stockStore != null);
 	}
 	
-	public static ArrayList<String> getAllFeedsFromStorage() {
+	public static ArrayList<String> getAllFeedURLsFromStorage() {
 		if (stockStore != null) {
 			ArrayList<String> list = new ArrayList<String>();
 
 			for (int i = 0; i < stockStore.getLength(); i++){
 				String key = stockStore.key(i);
 				
-				if (key.startsWith("Feed.")) {
+				if (key.startsWith("Feed.URL.")) {
 					list.add(stockStore.getItem(key));
 				}
 			}
@@ -36,14 +36,15 @@ public class WebStorage {
 	
 	public static void saveFeedToLocalStorage(Feed f) {
 		if (stockStore != null) {
-			stockStore.setItem("Feed." + f.url, f.url);
+			stockStore.setItem("Feed.URL." + f.url, f.url);
 		}
 	}
 	
 	public static void removeFeedFromStorage(Feed f) {
 		if (stockStore != null) {
-			stockStore.removeItem("Feed." + f.url);
-			stockStore.removeItem("Url.date." + f.url);
+			stockStore.removeItem("Feed.URL." + f.url);
+			stockStore.removeItem("Feed.Date." + f.url);
+			stockStore.removeItem("Feed.Category." + f.url);
 		}
 	}
 	
@@ -52,7 +53,7 @@ public class WebStorage {
 		Date d = new Date(time);
 		
 		if (stockStore != null) {
-			String s = stockStore.getItem("Url.date." + url);
+			String s = stockStore.getItem("Feed.Date." + url);
 			
 			System.out.println("Got " + s + " from " + url);
 			
@@ -70,8 +71,66 @@ public class WebStorage {
 			long time = System.currentTimeMillis();
 			Date d = new Date(time);
 
-			stockStore.setItem("Url.date." + url, DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_FULL).format(d));
+			stockStore.setItem("Feed.Date." + url, DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_FULL).format(d));
 			System.out.println("Set " + DateTimeFormat.getFormat(PredefinedFormat.DATE_TIME_FULL).format(d) + " to " + url);
 		}
 	}
+	
+	public static String getFeedCategoryFromStorage(String url) {
+		if (stockStore != null) {
+			String s = stockStore.getItem("Feed.Category." + url);
+			
+			System.out.println("Got " + s + " from " + url);
+
+			return s;
+		} else {
+			return "";
+		}
+	}
+	
+	public static void saveFeedCategoryToStorage(String category, String url) {
+		if (stockStore != null) {
+			stockStore.setItem("Feed.Category." + url, category);
+		}
+	}
+	
+	public static void addCategoryToStorage(String category) {
+		if (stockStore != null) {
+			stockStore.setItem("Category." + category, category);
+		}
+	}
+	
+	public static void removeCategoryFromStorage(String category) {
+		if (stockStore != null) {
+			stockStore.removeItem("Category." + category);
+		}
+	}
+	
+	public static ArrayList<String> getAllCategoriesFromStorage() {
+		if (stockStore != null) {
+			ArrayList<String> list = new ArrayList<String>();
+
+			for (int i = 0; i < stockStore.getLength(); i++){
+				String key = stockStore.key(i);
+				
+				if (key.startsWith("Category.")) {
+					list.add(stockStore.getItem(key));
+				}
+			}
+			return list;
+		}
+		return null;
+	}
+
+	public static void clearStorage() {
+		if (stockStore != null) {
+			for (int i = 0; i < stockStore.getLength(); i++){
+				String key = stockStore.key(i);
+				
+				if (key.startsWith("Feed."))
+					stockStore.removeItem(key);
+			}
+		}
+	}
+	
 }

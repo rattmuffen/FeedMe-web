@@ -18,7 +18,6 @@ import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
-import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
 public class MainPanel extends DockLayoutPanel {
@@ -29,7 +28,6 @@ public class MainPanel extends DockLayoutPanel {
 	HorizontalPanel titlePanel;
 
 	public Button addButton,showAllButton,removeAllButton;
-	public TextBox addressField;
 	public Label errorLabel;
 	
 	public InputHandler handler;
@@ -39,27 +37,27 @@ public class MainPanel extends DockLayoutPanel {
 	FeedMe_web controller;
 	
 	public Feed currentFeed;
+	
+	AddFeedPopup popup;
 
 	public MainPanel(FeedMe_web c) {
 		super(Unit.PX);
 		controller = c;
 		
 		handler = new InputHandler(this);
+		popup = new AddFeedPopup(this);
 	}
 	
 	public void createAndShowGUI() {
-		addButton = new Button("Add feed");
+		addButton = new Button("Add...");
 		addButton.addStyleName("addButton");
 		addButton.addClickHandler(handler);
 		
-		showAllButton = new Button("Show all feeds");
+		showAllButton = new Button("Show all");
 		showAllButton.addClickHandler(handler);
 		
-		removeAllButton = new Button("Remove all feeds");
+		removeAllButton = new Button("Remove all");
 		removeAllButton.addClickHandler(handler);
-
-		addressField = new TextBox();
-		addressField.addKeyUpHandler(handler);
 
 		feedList = new FeedList(controller,controller.feeds);
 
@@ -71,17 +69,12 @@ public class MainPanel extends DockLayoutPanel {
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.addStyleName("center");
 		hp.setSpacing(4);
-		hp.add(addressField);
 		hp.add(addButton);
+		hp.add(showAllButton);
+		hp.add(removeAllButton);
 		
-		HorizontalPanel hp2 = new HorizontalPanel();
-		hp2.addStyleName("center");
-		hp2.setSpacing(4);
-		hp2.add(showAllButton);
-		hp2.add(removeAllButton);
 
 		menuPanel.add(hp);
-		menuPanel.add(hp2);
 		menuPanel.add(feedList);
 
 		errorLabel = new Label();
@@ -102,6 +95,10 @@ public class MainPanel extends DockLayoutPanel {
 		
 		RootLayoutPanel rp = RootLayoutPanel.get();
 		rp.add(this);
+	}
+	
+	public void createAndShowPopup() {
+		popup.createAndShowGUI();
 	}
 
 	public void setFeed(final Feed f) {
@@ -138,11 +135,12 @@ public class MainPanel extends DockLayoutPanel {
 	public void sendAddressToServer() throws IllegalArgumentException {
 		errorLabel.setText("");
 
-		String textToServer = addressField.getText();
+		String textToServer = popup.addressField.getText();
 		if (!FieldVerifier.isValidAddress(textToServer)) {
 			errorLabel.setText("Please enter a valid address.");
 			return;
 		}
+		
 		controller.sendAddressToServer(textToServer);
 	}
 

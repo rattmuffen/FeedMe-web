@@ -2,11 +2,9 @@ package st.rattmuffen.feedme.client;
 
 import java.util.ArrayList;
 
-import st.rattmuffen.feedme.client.ui.InputHandler;
 import st.rattmuffen.feedme.client.ui.MainPanel;
 import st.rattmuffen.feedme.shared.Feed;
 import st.rattmuffen.feedme.shared.FeedEntry;
-import st.rattmuffen.feedme.shared.FieldVerifier;
 
 import com.google.gwt.core.client.EntryPoint;
 import com.google.gwt.core.client.GWT;
@@ -29,7 +27,7 @@ public class FeedMe_web implements EntryPoint {
 		boolean supportsStorage = WebStorage.initiateStorage();
 		if (supportsStorage) {
 			System.out.print("accessing local storage... ");
-			ArrayList<String> urls = WebStorage.getAllFeedsFromStorage();
+			ArrayList<String> urls = WebStorage.getAllFeedURLsFromStorage();
 			System.out.println(urls.size()  +" urls in storage!");
 
 			for (String	url : urls) {
@@ -68,9 +66,12 @@ public class FeedMe_web implements EntryPoint {
 				public void onSuccess(Feed result) {
 					feeds.add(result);
 					panel.feedList.addFeed(result);
+					
+					String storedCategory = WebStorage.getFeedCategoryFromStorage(result.url);
+					result.category = (storedCategory == null) ? "Default" : storedCategory;
+					
 					WebStorage.saveFeedToLocalStorage(result);
 
-					panel.addressField.setText("");
 					panel.addButton.setEnabled(true);
 				}
 			});
@@ -120,6 +121,8 @@ public class FeedMe_web implements EntryPoint {
 		for (Feed f : feedCopy) {
 			removeFeed(f);
 		}
+		
+		WebStorage.clearStorage();
 		
 		feedCopy.clear();
 	}

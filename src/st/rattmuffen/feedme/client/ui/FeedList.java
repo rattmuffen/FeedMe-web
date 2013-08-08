@@ -8,11 +8,14 @@ import st.rattmuffen.feedme.shared.Feed;
 import com.google.gwt.cell.client.ButtonCell;
 import com.google.gwt.cell.client.Cell;
 import com.google.gwt.cell.client.Cell.Context;
+import com.google.gwt.cell.client.ImageCell;
 import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Element;
 import com.google.gwt.dom.client.NativeEvent;
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.safehtml.shared.SafeHtml;
 import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellTable;
 import com.google.gwt.user.cellview.client.Column;
 import com.google.gwt.user.cellview.client.TextColumn;
@@ -34,7 +37,7 @@ public class FeedList extends CellTable<Feed> implements SelectionChangeEvent.Ha
 		TextColumn<Feed> nameColumn = new TextColumn<Feed>() {
 			@Override
 			public String getValue(Feed f) {
-				return f.title + " (" + f.unread + ")";
+				return f.category + ": " + f.title + " (" + f.unread + ")";
 			}
 
 			@Override
@@ -58,7 +61,7 @@ public class FeedList extends CellTable<Feed> implements SelectionChangeEvent.Ha
 				if (object != null)
 					super.render(context,object,sb);
 			}
-			
+
 			@Override
 			public void onBrowserEvent(Context context, Element elem,
 					Feed object, NativeEvent event) {
@@ -69,15 +72,42 @@ public class FeedList extends CellTable<Feed> implements SelectionChangeEvent.Ha
 			}
 		};
 
+		ImageCell iconCell = new ImageCell();
+		Column<Feed, String> iconColumn = new Column<Feed, String>(iconCell) {
+
+			@Override
+			public String getValue(Feed object) {
+				return "http://g.etfv.co/" + SafeHtmlUtils.htmlEscape(object.url);
+			}
+
+			@Override
+			public void render(Cell.Context context,final Feed object,SafeHtmlBuilder sb) {
+				if (object != null) {
+					SafeHtml rendered = new SafeHtml() {
+						private static final long serialVersionUID = 1L;
+						@Override
+						public String asString() {
+							return "<img src=\"http://g.etfv.co/" + SafeHtmlUtils.htmlEscape(object.url) + "\"" + 
+									"height=\"32\" width=\"32\">";
+						}
+					};
+
+					sb.append(rendered);
+				}
+			}
+		};
+
+		iconColumn.setCellStyleNames("feedIconListEntry");
+
+		this.addColumn(iconColumn , "");
 		this.addColumn(nameColumn , "");
 		this.addColumn(buttonColumn, "");
 
 		this.setWidth("100%", true);
 
-		this.setColumnWidth(nameColumn, 80.0, Unit.PCT);
-		this.setColumnWidth(buttonColumn, 20.0, Unit.PCT);
-
-		this.addStyleName("feedList");
+		this.setColumnWidth(iconColumn, 40.0, Unit.PX);
+		this.setColumnWidth(nameColumn, 180.0, Unit.PX);
+		this.setColumnWidth(buttonColumn, 30.0, Unit.PX);
 
 		selectionModel = new SingleSelectionModel<Feed>();
 		selectionModel.addSelectionChangeHandler(this);
@@ -86,8 +116,6 @@ public class FeedList extends CellTable<Feed> implements SelectionChangeEvent.Ha
 		this.setKeyboardSelectionPolicy(KeyboardSelectionPolicy.DISABLED);
 		this.setRowCount(feeds.size(), true);
 		this.setRowData(0, feeds);
-		this.addStyleName("feedList");
-
 
 		provider = new ListDataProvider<Feed>(feeds);
 		provider.addDataDisplay(this);

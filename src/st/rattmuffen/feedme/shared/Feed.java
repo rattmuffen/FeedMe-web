@@ -25,6 +25,8 @@ public class Feed implements Serializable {
 	public String link;
 
 	public String url;
+	
+	public String category;
 
 	public int unread;
 	
