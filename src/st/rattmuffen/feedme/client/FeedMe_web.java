@@ -65,13 +65,13 @@ public class FeedMe_web implements EntryPoint {
 
 				public void onSuccess(Feed result) {
 					feeds.add(result);
-					panel.feedList.addFeed(result);
 					
 					String storedCategory = WebStorage.getFeedCategoryFromStorage(result.url);
 					result.category = (storedCategory == null) ? "Default" : storedCategory;
 					
 					WebStorage.saveFeedToLocalStorage(result);
 
+					panel.updateTree();
 					panel.addButton.setEnabled(true);
 				}
 			});
@@ -91,7 +91,7 @@ public class FeedMe_web implements EntryPoint {
 
 		WebStorage.removeFeedFromStorage(f);
 		feeds.remove(f);
-		panel.feedList.remove(f);
+		panel.feedTree.buildTree(this, feeds);
 	}
 	
 	public void showAllFeeds() {
@@ -125,5 +125,7 @@ public class FeedMe_web implements EntryPoint {
 		WebStorage.clearStorage();
 		
 		feedCopy.clear();
+		
+		panel.feedTree.buildTree(this, feeds);
 	}
 }

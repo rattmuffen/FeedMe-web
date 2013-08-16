@@ -37,7 +37,7 @@ public class FeedList extends CellTable<Feed> implements SelectionChangeEvent.Ha
 		TextColumn<Feed> nameColumn = new TextColumn<Feed>() {
 			@Override
 			public String getValue(Feed f) {
-				return f.category + ": " + f.title + " (" + f.unread + ")";
+				return f.title + " (" + f.unread + ")";
 			}
 
 			@Override
@@ -88,7 +88,7 @@ public class FeedList extends CellTable<Feed> implements SelectionChangeEvent.Ha
 						@Override
 						public String asString() {
 							return "<img src=\"http://g.etfv.co/" + SafeHtmlUtils.htmlEscape(object.url) + "\"" + 
-									"height=\"32\" width=\"32\">";
+									"height=\"16\" width=\"16\">";
 						}
 					};
 
@@ -102,12 +102,12 @@ public class FeedList extends CellTable<Feed> implements SelectionChangeEvent.Ha
 		this.addColumn(iconColumn , "");
 		this.addColumn(nameColumn , "");
 		this.addColumn(buttonColumn, "");
+		
+		this.setColumnWidth(iconColumn, 15.0, Unit.PX);
+		this.setColumnWidth(nameColumn, 65.0, Unit.PX);
+		this.setColumnWidth(buttonColumn, 15.0, Unit.PX);
 
 		this.setWidth("100%", true);
-
-		this.setColumnWidth(iconColumn, 40.0, Unit.PX);
-		this.setColumnWidth(nameColumn, 180.0, Unit.PX);
-		this.setColumnWidth(buttonColumn, 30.0, Unit.PX);
 
 		selectionModel = new SingleSelectionModel<Feed>();
 		selectionModel.addSelectionChangeHandler(this);

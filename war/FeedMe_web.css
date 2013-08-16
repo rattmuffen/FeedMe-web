@@ -1,3 +1,7 @@
+body {
+	font-family: 'Roboto' !important;
+}
+
 h1 {
 	font-size: 48px;
 	font-weight: 400;
@@ -17,6 +21,7 @@ h1 {
 .menu {
 	border-right: 2px dotted lightgray;
 	margin: 40px 0px 20px 10px;
+	min-width: 260px;
 }
 
 .list {
@@ -45,15 +50,13 @@ h1 {
 .feedIconListEntry {
 	min-height: 16 px;
 	min-width: 16 px;
-	
-	display: block;
-    margin-left: auto;
-    margin-right: auto;
+	margin: 0px 0px 0px 0px !important;
+	padding: 0px 0px 0px 0px !important;
 }
 
 .feedListEntry {
-	font-size: 16px;
-	font-family: 'Roboto', bold !important;
+	font-size: 14px;
+	font-family: 'Roboto' !important;
 	text-align: left;
 	color: #777777;
 }
@@ -99,4 +102,29 @@ h1 {
 	font-family: 'Roboto', bold !important;
 	color: lightgray;
 	margin: 0px 0px 0px 0px;
+}
+
+.gwt-Tree {
+	font-family: 'Roboto' !important;
+  background: white;
+}
+
+.gwt-Tree .gwt-TreeItem-wrapper {
+  margin: 0px 0px 0px 0px;  // Indentation
+}
+
+.gwt-Tree .gwt-TreeItem {
+  padding: 0px;
+  margin: 0px;
+  white-space: nowrap;
+  cursor: hand;
+  cursor: pointer;
+  font-family: 'Roboto' !important;
+}
+
+.gwt-Tree .gwt-TreeItem-hovering {
+}
+
+.gwt-Tree .gwt-TreeItem-selected {
+	background: lightgray !important;
 }

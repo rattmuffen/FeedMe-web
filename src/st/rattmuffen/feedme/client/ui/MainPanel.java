@@ -32,7 +32,7 @@ public class MainPanel extends DockLayoutPanel {
 	
 	public InputHandler handler;
 
-	public FeedList feedList;
+	public FeedTree feedTree;
 
 	FeedMe_web controller;
 	
@@ -59,7 +59,7 @@ public class MainPanel extends DockLayoutPanel {
 		removeAllButton = new Button("Remove all");
 		removeAllButton.addClickHandler(handler);
 
-		feedList = new FeedList(controller,controller.feeds);
+		feedTree = new FeedTree(controller,controller.feeds);
 
 		menuPanel = new VerticalPanel();
 		menuPanel.setSpacing(4);
@@ -75,7 +75,7 @@ public class MainPanel extends DockLayoutPanel {
 		
 
 		menuPanel.add(hp);
-		menuPanel.add(feedList);
+		menuPanel.add(feedTree);
 
 		errorLabel = new Label();
 		errorLabel.addStyleName("serverResponseLabelError");
@@ -158,5 +158,9 @@ public class MainPanel extends DockLayoutPanel {
 
 	public void showAllFeeds() {
 		controller.showAllFeeds();
+	}
+
+	public void updateTree() {
+		feedTree.buildTree(controller, controller.feeds);
 	}
 }
