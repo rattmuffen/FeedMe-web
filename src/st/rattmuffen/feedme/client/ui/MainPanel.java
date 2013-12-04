@@ -38,14 +38,16 @@ public class MainPanel extends DockLayoutPanel {
 	
 	public Feed currentFeed;
 	
-	AddFeedPopup popup;
+	AddFeedPopup addPopup;
+	EditFeedPopup editPopup;
 
 	public MainPanel(FeedMe_web c) {
 		super(Unit.PX);
 		controller = c;
 		
 		handler = new InputHandler(this);
-		popup = new AddFeedPopup(this);
+		addPopup = new AddFeedPopup(this);
+		editPopup = new EditFeedPopup(this);
 	}
 	
 	public void createAndShowGUI() {
@@ -97,8 +99,12 @@ public class MainPanel extends DockLayoutPanel {
 		rp.add(this);
 	}
 	
-	public void createAndShowPopup() {
-		popup.createAndShowGUI();
+	public void createAndShowAddPopup() {
+		addPopup.createAndShowGUI();
+	}
+	
+	public void createAndShowEditPopup(Feed f) {
+		editPopup.createAndShowGUI(f);
 	}
 
 	public void setFeed(final Feed f) {
@@ -135,7 +141,7 @@ public class MainPanel extends DockLayoutPanel {
 	public void sendAddressToServer() throws IllegalArgumentException {
 		errorLabel.setText("");
 
-		String textToServer = popup.addressField.getText();
+		String textToServer = addPopup.addressField.getText();
 		if (!FieldVerifier.isValidAddress(textToServer)) {
 			errorLabel.setText("Please enter a valid address.");
 			return;

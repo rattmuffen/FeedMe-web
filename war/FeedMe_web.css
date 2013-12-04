@@ -77,7 +77,16 @@ h1 {
 
 #rssEntry {
 	margin: 20px 20px 10px 20px;
-	float: left;
+	float: none;
+	width: 50%;
+	display: block;
+	text-align: center;
+	padding: 10px;
+	margin-top: 10px;
+	margin-bottom: 10px;
+	border-bottom: 2px dotted #eee;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 #rssTitle {
@@ -94,6 +103,7 @@ h1 {
 #rssDescription {
 	font-size: 14px;
 	font-family: 'Roboto', bold;
+	text-align: left;
 }
 
 #creds {

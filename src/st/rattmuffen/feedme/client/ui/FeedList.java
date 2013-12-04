@@ -3,6 +3,7 @@ package st.rattmuffen.feedme.client.ui;
 import java.util.ArrayList;
 
 import st.rattmuffen.feedme.client.FeedMe_web;
+import st.rattmuffen.feedme.client.WebStorage;
 import st.rattmuffen.feedme.shared.Feed;
 
 import com.google.gwt.cell.client.ButtonCell;
@@ -37,7 +38,14 @@ public class FeedList extends CellTable<Feed> implements SelectionChangeEvent.Ha
 		TextColumn<Feed> nameColumn = new TextColumn<Feed>() {
 			@Override
 			public String getValue(Feed f) {
-				return f.title + " (" + f.unread + ")";
+				String title = f.title;
+				String storedTitle = WebStorage.getFeedTitleFromStorage(f.url);
+				
+				if (storedTitle != null && !storedTitle.equals(""))
+					title = storedTitle;
+				
+				
+				return title + " (" + f.unread + ")";
 			}
 
 			@Override
@@ -53,7 +61,7 @@ public class FeedList extends CellTable<Feed> implements SelectionChangeEvent.Ha
 
 			@Override
 			public String getValue(Feed object) {
-				return "X";
+				return "Edit";
 			}
 
 			@Override
@@ -66,9 +74,8 @@ public class FeedList extends CellTable<Feed> implements SelectionChangeEvent.Ha
 			public void onBrowserEvent(Context context, Element elem,
 					Feed object, NativeEvent event) {
 				event.preventDefault();
-
-				controller.removeFeed(object);
-				controller.setFeed(null);
+				
+				controller.panel.createAndShowEditPopup(object);
 			}
 		};
 
@@ -105,7 +112,7 @@ public class FeedList extends CellTable<Feed> implements SelectionChangeEvent.Ha
 		
 		this.setColumnWidth(iconColumn, 15.0, Unit.PX);
 		this.setColumnWidth(nameColumn, 65.0, Unit.PX);
-		this.setColumnWidth(buttonColumn, 15.0, Unit.PX);
+		this.setColumnWidth(buttonColumn, 25.0, Unit.PX);
 
 		this.setWidth("100%", true);
 

@@ -94,6 +94,23 @@ public class FeedMe_web implements EntryPoint {
 		panel.feedTree.buildTree(this, feeds);
 	}
 	
+	public void updateTree() {
+		panel.feedTree.buildTree(this, feeds);
+	}
+	
+	public void updateTree(Feed updFeed) {
+		for (Feed f : feeds) {
+			if (f.url.equals(updFeed.url)) {
+			
+				feeds.remove(f);
+				feeds.add(updFeed);
+			}
+		}
+		
+		
+		panel.feedTree.buildTree(this, feeds);
+	}
+	
 	public void showAllFeeds() {
 		Feed allFeeds = new Feed();
 		allFeeds.description = "All feeds";

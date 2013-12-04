@@ -35,6 +35,7 @@ public class FeedTree extends Tree {
 		ArrayList<String> cats = new ArrayList<String>();
 		
 		for (Feed f : feeds) {
+			System.out.println(f.category);
 			if (!cats.contains(f.category))
 				cats.add(f.category);
 		}

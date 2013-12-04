@@ -21,14 +21,14 @@ public class InputHandler implements ClickHandler, KeyUpHandler {
 	public void onKeyUp(KeyUpEvent event) {
 		if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
 			try {
-				String cat = controller.popup.categoryBox.getItemText(controller.popup.categoryBox.getSelectedIndex());
+				String cat = controller.addPopup.categoryBox.getItemText(controller.addPopup.categoryBox.getSelectedIndex());
 				
-				if (controller.popup.categoryBox.getSelectedIndex()+1 == controller.popup.categoryBox.getItemCount()) 
+				if (controller.addPopup.categoryBox.getSelectedIndex()+1 == controller.addPopup.categoryBox.getItemCount()) 
 					cat = "Default";
-				WebStorage.saveFeedCategoryToStorage(cat, controller.popup.addressField.getText().trim());
+				WebStorage.saveFeedCategoryToStorage(cat, controller.addPopup.addressField.getText().trim());
 				
 				controller.sendAddressToServer();
-				controller.popup.hide();
+				controller.addPopup.hide();
 			} catch (Exception e) {
 				e.printStackTrace();
 			} 
@@ -40,31 +40,51 @@ public class InputHandler implements ClickHandler, KeyUpHandler {
 		Widget sender = (Widget) event.getSource();
 
 		if (sender == controller.addButton) {
-			controller.createAndShowPopup();
+			controller.createAndShowAddPopup();
 		} else if (sender == controller.removeAllButton) {
 			controller.removeAllFeeds();
 		} else if (sender == controller.showAllButton) {
 			controller.showAllFeeds();
-		} else if (sender == controller.popup.closeButton) {
-			controller.popup.hide();
-		} else if (sender == controller.popup.addButton) {
-			String cat = controller.popup.categoryBox.getItemText(controller.popup.categoryBox.getSelectedIndex());
+		} else if (sender == controller.addPopup.closeButton) {
+			controller.addPopup.hide();
+		} else if (sender == controller.addPopup.addButton) {
+			String cat = controller.addPopup.categoryBox.getItemText(controller.addPopup.categoryBox.getSelectedIndex());
 			
-			if (controller.popup.categoryBox.getSelectedIndex() +1 == controller.popup.categoryBox.getItemCount()) {
+			if (controller.addPopup.categoryBox.getSelectedIndex() +1 == controller.addPopup.categoryBox.getItemCount()) {
 				cat = "Default";
 			}
 
-			WebStorage.saveFeedCategoryToStorage(cat, controller.popup.addressField.getText().trim());
+			WebStorage.saveFeedCategoryToStorage(cat, controller.addPopup.addressField.getText().trim());
 			
 			controller.sendAddressToServer();
-			controller.popup.hide();
-		} else if (sender == controller.popup.addCategoryButton) {
-			String cat = controller.popup.newCategoryField.getText().trim();
+			controller.addPopup.hide();
+		} else if (sender == controller.addPopup.addCategoryButton) {
+			String cat = controller.addPopup.newCategoryField.getText().trim();
 			WebStorage.addCategoryToStorage(cat);
-			controller.popup.addCatPanel.setVisible(false);
+			controller.addPopup.addCatPanel.setVisible(false);
 			
-			controller.popup.categoryBox.insertItem(cat, controller.popup.categoryBox.getItemCount()-1);
-			controller.popup.categoryBox.setSelectedIndex(controller.popup.categoryBox.getItemCount()-2);
+			controller.addPopup.categoryBox.insertItem(cat, controller.addPopup.categoryBox.getItemCount()-1);
+			controller.addPopup.categoryBox.setSelectedIndex(controller.addPopup.categoryBox.getItemCount()-2);
+		} else if (sender == controller.editPopup.closeButton) {
+			controller.editPopup.hide();
+		} else if (sender == controller.editPopup.removeButton) {
+			controller.controller.removeFeed(controller.editPopup.feed); //lol, this needs a rewrite
+			controller.controller.setFeed(null);
+			controller.editPopup.hide();
+		} else if (sender == controller.editPopup.editButton) {
+			String newCat = controller.editPopup.categoryBox.getItemText(controller.editPopup.categoryBox.getSelectedIndex());
+			if (!newCat.equalsIgnoreCase(controller.editPopup.feed.category)) {
+				WebStorage.saveFeedCategoryToStorage(newCat, controller.editPopup.feed.url);
+				controller.editPopup.feed.category = newCat;
+			}
+			
+			String newTitle = controller.editPopup.titleField.getText();
+			if (!newTitle.endsWith(controller.editPopup.feed.title)) {
+				WebStorage.saveFeedTitleToStorage(newTitle, controller.editPopup.feed.url);
+			}
+			
+			controller.editPopup.hide();
+			controller.controller.updateTree(controller.editPopup.feed);
 		}
 	}
 }

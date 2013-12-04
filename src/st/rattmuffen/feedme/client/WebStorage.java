@@ -94,6 +94,25 @@ public class WebStorage {
 		}
 	}
 	
+	
+	public static String getFeedTitleFromStorage(String url) {
+		if (stockStore != null) {
+			String s = stockStore.getItem("Feed.Title." + url);
+			
+			System.out.println("Got " + s + " from " + url);
+
+			return s;
+		} else {
+			return "";
+		}
+	}
+	
+	public static void saveFeedTitleToStorage(String title, String url) {
+		if (stockStore != null) {
+			stockStore.setItem("Feed.Title." + url, title);
+		}
+	}
+	
 	public static void addCategoryToStorage(String category) {
 		if (stockStore != null) {
 			stockStore.setItem("Category." + category, category);
