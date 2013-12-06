@@ -49,8 +49,11 @@ public class RssServiceImpl extends RemoteServiceServlet implements RssService {
 				fe.date = syndEntry.getPublishedDate();
 				fe.author = syndEntry.getAuthor();
 				fe.link = syndEntry.getLink();
-				if (syndFeed.getDescription() != null)
-					fe.description = syndEntry.getDescription().getValue();
+				
+				try {
+					if (syndFeed.getDescription() != null)
+						fe.description = syndEntry.getDescription().getValue();
+				} catch (NullPointerException ne) {}
 				
 				if (fe.date != null &&
 						fe.date.after(d)) {

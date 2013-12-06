@@ -47,6 +47,13 @@ h1 {
 	color: red;
 }
 
+.loadingLabel {
+	color: #eee;
+	font-family: 'Roboto', cursive !important;
+	text-align: center;
+	font-size: 18pt;
+}
+
 .feedIconListEntry {
 	min-height: 16 px;
 	min-width: 16 px;

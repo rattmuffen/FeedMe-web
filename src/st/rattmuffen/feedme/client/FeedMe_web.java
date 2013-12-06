@@ -23,16 +23,21 @@ public class FeedMe_web implements EntryPoint {
 
 		panel = new MainPanel(this);
 		panel.createAndShowGUI();
+		panel.toggleLoading();
 
 		boolean supportsStorage = WebStorage.initiateStorage();
 		if (supportsStorage) {
 			System.out.print("accessing local storage... ");
 			ArrayList<String> urls = WebStorage.getAllFeedURLsFromStorage();
 			System.out.println(urls.size()  +" urls in storage!");
+			if (urls.size() == 0)
+				panel.toggleLoading();
 
-			for (String	url : urls) {
-				sendAddressToServer(url);
+			for (int i = 0; i < urls.size(); i++) {
+				sendAddressToServer(urls.get(i), i == urls.size() - 1);
 			}
+		
+
 		} else {
 			Window.alert("Your browser does not support HTML5 storage and won't be able to save feeds between sessions!");
 		}
@@ -49,8 +54,12 @@ public class FeedMe_web implements EntryPoint {
 			panel.setEmpty();
 		}
 	}
+	
+	public void sendAddressToServer(String textToServer) {
+		sendAddressToServer(textToServer,false);
+	}
 
-	public void sendAddressToServer(String textToServer) throws IllegalArgumentException {
+	public void sendAddressToServer(String textToServer,final boolean lastFeed) throws IllegalArgumentException {
 		panel.addButton.setEnabled(false);
 
 		if (alreadyAdded(textToServer)) {
@@ -73,6 +82,10 @@ public class FeedMe_web implements EntryPoint {
 
 					panel.updateTree();
 					panel.addButton.setEnabled(true);
+					
+					if (lastFeed) {
+						panel.toggleLoading();
+					}
 				}
 			});
 		}
@@ -111,6 +124,7 @@ public class FeedMe_web implements EntryPoint {
 		panel.feedTree.buildTree(this, feeds);
 	}
 	
+	
 	public void showAllFeeds() {
 		Feed allFeeds = new Feed();
 		allFeeds.description = "All feeds";
@@ -129,6 +143,24 @@ public class FeedMe_web implements EntryPoint {
 		System.out.println("All feeds size: " + allFeeds.entries.size());
 		
 		setFeed(allFeeds);
+	}
+	
+	public void showAllForCategory(String cat) {
+		Feed catFeeds = new Feed();
+		catFeeds.description = "All feeds for " + cat;
+		catFeeds.link = "";
+		catFeeds.url = "";
+		catFeeds.unread = 0;
+		catFeeds.title = "All feeds for " + cat;
+		
+		for (Feed f : panel.feedTree.getFeedsWithCategory(cat, feeds)) {
+			for (FeedEntry fe : f.entries) {
+				catFeeds.addEntry(fe);
+			}
+		}
+		
+		catFeeds.sort();
+		setFeed(catFeeds);
 	}
 
 	public void removeAllFeeds() {

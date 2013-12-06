@@ -28,7 +28,7 @@ public class MainPanel extends DockLayoutPanel {
 	HorizontalPanel titlePanel;
 
 	public Button addButton,showAllButton,removeAllButton;
-	public Label errorLabel;
+	public Label errorLabel,loadingLabel;
 	
 	public InputHandler handler;
 
@@ -82,6 +82,12 @@ public class MainPanel extends DockLayoutPanel {
 		errorLabel = new Label();
 		errorLabel.addStyleName("serverResponseLabelError");
 		
+		loadingLabel = new Label();
+		loadingLabel.setText("Loading feeds...");
+		loadingLabel.addStyleName("loadingLabel");
+		loadingLabel.setVisible(false);
+		
+		menuPanel.add(loadingLabel);
 		menuPanel.add(errorLabel);
 		menuPanel.addStyleName("menu");
 
@@ -168,5 +174,10 @@ public class MainPanel extends DockLayoutPanel {
 
 	public void updateTree() {
 		feedTree.buildTree(controller, controller.feeds);
+	}
+	
+	public void toggleLoading() {
+		feedTree.setVisible(!feedTree.isVisible());
+		loadingLabel.setVisible(!loadingLabel.isVisible());
 	}
 }

@@ -98,11 +98,10 @@ public class AddFeedPopup extends DialogBox implements ChangeHandler {
 		addButton.addClickHandler(controller.handler);
 		closeButton = new Button("Close");
 		closeButton.addClickHandler(controller.handler);
-		hp2.add(closeButton);
+		
 		hp2.add(addButton);
+		hp2.add(closeButton);
 		contents.add(hp2);
-		
-		
 
 		setWidget(contents);
 
