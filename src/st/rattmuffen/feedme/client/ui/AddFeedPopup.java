@@ -21,7 +21,7 @@ public class AddFeedPopup extends DialogBox implements ChangeHandler {
 
 	Button addButton,closeButton,addCategoryButton;
 	public TextBox addressField,newCategoryField;
-	public ListBox categoryBox;
+	public CategoryBox categoryBox;
 	
 	HorizontalPanel addCatPanel;
 
@@ -52,19 +52,9 @@ public class AddFeedPopup extends DialogBox implements ChangeHandler {
 		hp = new HorizontalPanel();
 		hp.setSpacing(5);
 
-		categoryBox = new ListBox(false);
+		categoryBox = new CategoryBox(false);
 		categoryBox.addChangeHandler(this);
-		categoryBox.addItem("Default");
-		categoryBox.addItem("Technology");
-		categoryBox.addItem("News");
-		categoryBox.addItem("Misc");
-		
 		categoryBox.setSelectedIndex(0);
-		
-		for (String category : WebStorage.getAllCategoriesFromStorage()) {
-			categoryBox.addItem(category);
-		}
-		
 		categoryBox.addItem("Add new category...");
 
 		h = new HTML("Category:");

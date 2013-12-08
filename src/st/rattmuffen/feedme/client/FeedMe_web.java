@@ -1,6 +1,7 @@
 package st.rattmuffen.feedme.client;
 
 import java.util.ArrayList;
+import java.util.ListIterator;
 
 import st.rattmuffen.feedme.client.ui.MainPanel;
 import st.rattmuffen.feedme.shared.Feed;
@@ -36,7 +37,7 @@ public class FeedMe_web implements EntryPoint {
 			for (int i = 0; i < urls.size(); i++) {
 				sendAddressToServer(urls.get(i), i == urls.size() - 1);
 			}
-		
+
 
 		} else {
 			Window.alert("Your browser does not support HTML5 storage and won't be able to save feeds between sessions!");
@@ -54,7 +55,7 @@ public class FeedMe_web implements EntryPoint {
 			panel.setEmpty();
 		}
 	}
-	
+
 	public void sendAddressToServer(String textToServer) {
 		sendAddressToServer(textToServer,false);
 	}
@@ -74,15 +75,15 @@ public class FeedMe_web implements EntryPoint {
 
 				public void onSuccess(Feed result) {
 					feeds.add(result);
-					
+
 					String storedCategory = WebStorage.getFeedCategoryFromStorage(result.url);
 					result.category = (storedCategory == null) ? "Default" : storedCategory;
-					
+
 					WebStorage.saveFeedToLocalStorage(result);
 
 					panel.updateTree();
 					panel.addButton.setEnabled(true);
-					
+
 					if (lastFeed) {
 						panel.toggleLoading();
 					}
@@ -106,25 +107,26 @@ public class FeedMe_web implements EntryPoint {
 		feeds.remove(f);
 		panel.feedTree.buildTree(this, feeds);
 	}
-	
+
 	public void updateTree() {
 		panel.feedTree.buildTree(this, feeds);
 	}
-	
+
 	public void updateTree(Feed updFeed) {
-		for (Feed f : feeds) {
-			if (f.url.equals(updFeed.url)) {
+		ListIterator<Feed> it = feeds.listIterator();    
+		if(it.hasNext()) {  
+			Feed f = it.next();   
 			
+			if (f.url.equals(updFeed.url)) {
 				feeds.remove(f);
 				feeds.add(updFeed);
 			}
-		}
-		
-		
+		}  
+
 		panel.feedTree.buildTree(this, feeds);
 	}
-	
-	
+
+
 	public void showAllFeeds() {
 		Feed allFeeds = new Feed();
 		allFeeds.description = "All feeds";
@@ -132,19 +134,19 @@ public class FeedMe_web implements EntryPoint {
 		allFeeds.url = "";
 		allFeeds.unread = 0;
 		allFeeds.title = "All feeds";
-		
+
 		for (Feed f : feeds) {
 			for (FeedEntry fe : f.entries) {
 				allFeeds.addEntry(fe);
 			}
 		}
-		
+
 		allFeeds.sort();
 		System.out.println("All feeds size: " + allFeeds.entries.size());
-		
+
 		setFeed(allFeeds);
 	}
-	
+
 	public void showAllForCategory(String cat) {
 		Feed catFeeds = new Feed();
 		catFeeds.description = "All feeds for " + cat;
@@ -152,29 +154,49 @@ public class FeedMe_web implements EntryPoint {
 		catFeeds.url = "";
 		catFeeds.unread = 0;
 		catFeeds.title = "All feeds for " + cat;
-		
+
 		for (Feed f : panel.feedTree.getFeedsWithCategory(cat, feeds)) {
 			for (FeedEntry fe : f.entries) {
 				catFeeds.addEntry(fe);
 			}
 		}
-		
+
 		catFeeds.sort();
 		setFeed(catFeeds);
+	}
+
+	public void showFavoriteFeeds() {
+		Feed favFeeds = new Feed();
+		favFeeds.description = "Favorite feeds";
+		favFeeds.link = "";
+		favFeeds.url = "";
+		favFeeds.unread = 0;
+		favFeeds.title = "Favorite feeds";
+
+		for (Feed f : panel.feedTree.getFavoriteFeeds(feeds)) {
+			for (FeedEntry fe : f.entries) {
+				favFeeds.addEntry(fe);
+			}
+		}
+
+		favFeeds.sort();
+		setFeed(favFeeds);
 	}
 
 	public void removeAllFeeds() {
 		ArrayList<Feed> feedCopy = new ArrayList<Feed>();
 		feedCopy.addAll(feeds);
-		
+
 		for (Feed f : feedCopy) {
 			removeFeed(f);
 		}
-		
+
 		WebStorage.clearStorage();
-		
+
 		feedCopy.clear();
-		
+
 		panel.feedTree.buildTree(this, feeds);
 	}
+
+
 }

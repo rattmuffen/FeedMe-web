@@ -113,6 +113,26 @@ public class WebStorage {
 		}
 	}
 	
+	public static boolean getFeedFavoriteFromStorage(String url) {
+		if (stockStore != null) {
+			String s = stockStore.getItem("Feed.Favorite." + url);
+			
+			return (s != null && s.equals("true"));
+		} else {
+			return false;
+		}
+	}
+	
+	public static void saveFeedFavoriteToStorage(String url, boolean favorite) {
+		if (stockStore != null) {
+			String s = "true";
+			if (!favorite)
+				s = "false";
+			
+			stockStore.setItem("Feed.Favorite." + url, s);
+		}
+	}
+	
 	public static void addCategoryToStorage(String category) {
 		if (stockStore != null) {
 			stockStore.setItem("Category." + category, category);

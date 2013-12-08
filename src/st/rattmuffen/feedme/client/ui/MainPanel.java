@@ -27,7 +27,7 @@ public class MainPanel extends DockLayoutPanel {
 	ScrollPanel sp;
 	HorizontalPanel titlePanel;
 
-	public Button addButton,showAllButton,removeAllButton;
+	public Button addButton,removeAllButton;
 	public Label errorLabel,loadingLabel;
 	
 	public InputHandler handler;
@@ -55,9 +55,6 @@ public class MainPanel extends DockLayoutPanel {
 		addButton.addStyleName("addButton");
 		addButton.addClickHandler(handler);
 		
-		showAllButton = new Button("Show all");
-		showAllButton.addClickHandler(handler);
-		
 		removeAllButton = new Button("Remove all");
 		removeAllButton.addClickHandler(handler);
 
@@ -72,7 +69,6 @@ public class MainPanel extends DockLayoutPanel {
 		hp.addStyleName("center");
 		hp.setSpacing(4);
 		hp.add(addButton);
-		hp.add(showAllButton);
 		hp.add(removeAllButton);
 		
 

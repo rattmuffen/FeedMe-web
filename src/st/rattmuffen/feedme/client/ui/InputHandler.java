@@ -43,8 +43,6 @@ public class InputHandler implements ClickHandler, KeyUpHandler {
 			controller.createAndShowAddPopup();
 		} else if (sender == controller.removeAllButton) {
 			controller.removeAllFeeds();
-		} else if (sender == controller.showAllButton) {
-			controller.showAllFeeds();
 		} else if (sender == controller.addPopup.closeButton) {
 			controller.addPopup.hide();
 		} else if (sender == controller.addPopup.addButton) {
@@ -82,6 +80,10 @@ public class InputHandler implements ClickHandler, KeyUpHandler {
 			if (!newTitle.endsWith(controller.editPopup.feed.title)) {
 				WebStorage.saveFeedTitleToStorage(newTitle, controller.editPopup.feed.url);
 			}
+			
+			
+			boolean isFavorite = controller.editPopup.isFavoriteBox.getValue();
+			WebStorage.saveFeedFavoriteToStorage(controller.editPopup.feed.url, isFavorite);
 			
 			controller.editPopup.hide();
 			controller.controller.updateTree(controller.editPopup.feed);

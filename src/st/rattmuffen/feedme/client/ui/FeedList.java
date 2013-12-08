@@ -40,18 +40,28 @@ public class FeedList extends CellTable<Feed> implements SelectionChangeEvent.Ha
 			public String getValue(Feed f) {
 				String title = f.title;
 				String storedTitle = WebStorage.getFeedTitleFromStorage(f.url);
+		
 				
 				if (storedTitle != null && !storedTitle.equals(""))
 					title = storedTitle;
-				
-				
-				return title + " (" + f.unread + ")";
+	
+				return " " + title + " (" + f.unread + ")";
 			}
 
 			@Override
 			public void render(Context context, Feed object, SafeHtmlBuilder sb) {
-				if (object != null)
+				if (object != null) {
+					final boolean fav = WebStorage.getFeedFavoriteFromStorage(object.url);
+					
+					sb.append(new SafeHtml() {
+						private static final long serialVersionUID = 1L;
+						@Override
+						public String asString() {
+							return fav ? Constants.FILLED_STAR : Constants.EMPTY_STAR;
+						}
+					});
 					super.render(context, object, sb);
+				}
 			}
 		};
 		nameColumn.setCellStyleNames("feedListEntry");
@@ -91,7 +101,9 @@ public class FeedList extends CellTable<Feed> implements SelectionChangeEvent.Ha
 			public void render(Cell.Context context,final Feed object,SafeHtmlBuilder sb) {
 				if (object != null) {
 					SafeHtml rendered = new SafeHtml() {
+						final boolean fav = WebStorage.getFeedFavoriteFromStorage(object.url);
 						private static final long serialVersionUID = 1L;
+						
 						@Override
 						public String asString() {
 							return "<img src=\"http://g.etfv.co/" + SafeHtmlUtils.htmlEscape(object.url) + "\"" + 
