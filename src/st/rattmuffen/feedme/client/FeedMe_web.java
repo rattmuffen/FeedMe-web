@@ -55,6 +55,15 @@ public class FeedMe_web implements EntryPoint {
 			panel.setEmpty();
 		}
 	}
+	
+	public String getFeedTitle(Feed f) {
+		String storedTitle = WebStorage.getFeedTitleFromStorage(f.url);
+		String feedTitle = f.title;
+		if(storedTitle != null && storedTitle != "") {
+			feedTitle = storedTitle;
+		}
+		return feedTitle;
+	}
 
 	public void sendAddressToServer(String textToServer) {
 		sendAddressToServer(textToServer,false);
@@ -182,6 +191,31 @@ public class FeedMe_web implements EntryPoint {
 		favFeeds.sort();
 		setFeed(favFeeds);
 	}
+	
+	public void showShuffleFeeds() {
+		Feed shuffledFeeds = new Feed();
+		shuffledFeeds.description = "Shuffled feeds";
+		shuffledFeeds.link = "";
+		shuffledFeeds.url = "";
+		shuffledFeeds.unread = 0;
+		shuffledFeeds.title = "Shuffled feeds";
+
+		ArrayList<FeedEntry> allEntries = new ArrayList<FeedEntry>();
+		for (Feed f : feeds) {
+			for (FeedEntry fe : f.entries) {
+				allEntries.add(fe);
+			}
+		}
+		
+		while (!allEntries.isEmpty()) {
+			int rand = (int) (Math.random() * allEntries.size());
+			FeedEntry entry = allEntries.get(rand);
+			shuffledFeeds.addEntry(entry);
+			allEntries.remove(entry);
+		}
+
+		setFeed(shuffledFeeds);
+	}
 
 	public void removeAllFeeds() {
 		ArrayList<Feed> feedCopy = new ArrayList<Feed>();
@@ -197,6 +231,8 @@ public class FeedMe_web implements EntryPoint {
 
 		panel.feedTree.buildTree(this, feeds);
 	}
+
+
 
 
 }

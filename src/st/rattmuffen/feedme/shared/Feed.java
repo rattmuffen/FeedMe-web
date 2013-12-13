@@ -54,7 +54,7 @@ public class Feed implements Serializable {
 
 	public String getImage() {
 		return image==null ? "" : image;
-	};
+	}
 	
 	public String getDescription() {
 		return description==null ? title : description;

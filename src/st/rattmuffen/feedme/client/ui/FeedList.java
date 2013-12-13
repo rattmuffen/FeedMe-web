@@ -40,11 +40,11 @@ public class FeedList extends CellTable<Feed> implements SelectionChangeEvent.Ha
 			public String getValue(Feed f) {
 				String title = f.title;
 				String storedTitle = WebStorage.getFeedTitleFromStorage(f.url);
-		
-				
+
+
 				if (storedTitle != null && !storedTitle.equals(""))
 					title = storedTitle;
-	
+
 				return " " + title + " (" + f.unread + ")";
 			}
 
@@ -52,7 +52,7 @@ public class FeedList extends CellTable<Feed> implements SelectionChangeEvent.Ha
 			public void render(Context context, Feed object, SafeHtmlBuilder sb) {
 				if (object != null) {
 					final boolean fav = WebStorage.getFeedFavoriteFromStorage(object.url);
-					
+
 					sb.append(new SafeHtml() {
 						private static final long serialVersionUID = 1L;
 						@Override
@@ -76,15 +76,16 @@ public class FeedList extends CellTable<Feed> implements SelectionChangeEvent.Ha
 
 			@Override
 			public void render(Cell.Context context,Feed object,SafeHtmlBuilder sb) {
-				if (object != null)
-					super.render(context,object,sb);
+				sb.appendHtmlConstant("<button type=\"button\" class=\"gwt-Button\" tabindex=\"-1\"><i class=\"fa fa-pencil-square\"></i>");
+				//sb.appendEscaped(" Edit");
+				sb.appendHtmlConstant("</button>");
 			}
 
 			@Override
 			public void onBrowserEvent(Context context, Element elem,
 					Feed object, NativeEvent event) {
 				event.preventDefault();
-				
+
 				controller.panel.createAndShowEditPopup(object);
 			}
 		};
@@ -103,7 +104,7 @@ public class FeedList extends CellTable<Feed> implements SelectionChangeEvent.Ha
 					SafeHtml rendered = new SafeHtml() {
 						final boolean fav = WebStorage.getFeedFavoriteFromStorage(object.url);
 						private static final long serialVersionUID = 1L;
-						
+
 						@Override
 						public String asString() {
 							return "<img src=\"http://g.etfv.co/" + SafeHtmlUtils.htmlEscape(object.url) + "\"" + 
@@ -121,10 +122,10 @@ public class FeedList extends CellTable<Feed> implements SelectionChangeEvent.Ha
 		this.addColumn(iconColumn , "");
 		this.addColumn(nameColumn , "");
 		this.addColumn(buttonColumn, "");
-		
+
 		this.setColumnWidth(iconColumn, 15.0, Unit.PX);
-		this.setColumnWidth(nameColumn, 65.0, Unit.PX);
-		this.setColumnWidth(buttonColumn, 25.0, Unit.PX);
+		this.setColumnWidth(nameColumn, 80.0, Unit.PX);
+		this.setColumnWidth(buttonColumn, 20.0, Unit.PX);
 
 		this.setWidth("100%", true);
 

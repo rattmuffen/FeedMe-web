@@ -1,31 +1,36 @@
 package st.rattmuffen.feedme.client.ui;
 
+import st.rattmuffen.feedme.client.FeedMe_web;
 import st.rattmuffen.feedme.client.WebStorage;
 
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
+import com.google.gwt.event.dom.client.KeyCodes;
+import com.google.gwt.event.dom.client.KeyUpEvent;
+import com.google.gwt.event.dom.client.KeyUpHandler;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.ui.Button;
 import com.google.gwt.user.client.ui.DialogBox;
 import com.google.gwt.user.client.ui.HTML;
 import com.google.gwt.user.client.ui.HasHorizontalAlignment;
 import com.google.gwt.user.client.ui.HorizontalPanel;
-import com.google.gwt.user.client.ui.ListBox;
 import com.google.gwt.user.client.ui.PopupPanel;
 import com.google.gwt.user.client.ui.TextBox;
 import com.google.gwt.user.client.ui.VerticalPanel;
 
-public class AddFeedPopup extends DialogBox implements ChangeHandler {
+public class AddFeedPopup extends DialogBox implements ChangeHandler, ClickHandler, KeyUpHandler {
 
-	MainPanel controller;
+	FeedMe_web controller;
 
 	Button addButton,closeButton,addCategoryButton;
 	public TextBox addressField,newCategoryField;
 	public CategoryBox categoryBox;
-	
+
 	HorizontalPanel addCatPanel;
 
-	public AddFeedPopup(MainPanel c) {
+	public AddFeedPopup(FeedMe_web c) {
 		super(true);
 
 		controller = c;
@@ -42,8 +47,8 @@ public class AddFeedPopup extends DialogBox implements ChangeHandler {
 		HorizontalPanel hp = new HorizontalPanel();
 		hp.setSpacing(5);
 		addressField = new TextBox();
-		addressField.addKeyUpHandler(controller.handler);
-		
+		addressField.addKeyUpHandler(this);
+
 		HTML h = new HTML("Address:");
 		hp.add(h);
 		hp.add(addressField);
@@ -61,23 +66,23 @@ public class AddFeedPopup extends DialogBox implements ChangeHandler {
 		hp.add(h);
 		hp.add(categoryBox);
 		contents.add(hp);
-		
-		
+
+
 		addCatPanel = new HorizontalPanel();
 		addCatPanel.setSpacing(5);
-		
-		
+
+
 		HTML h2 = new HTML("New category:");
 		addCatPanel.add(h2);
-		
+
 		newCategoryField = new TextBox(); 
 		addCategoryButton = new Button("Add");
-		addCategoryButton.addClickHandler(controller.handler);
-		
+		addCategoryButton.addClickHandler(this);
+
 		addCatPanel.add(newCategoryField);
 		addCatPanel.add(addCategoryButton);
-		
-		
+
+
 		contents.add(addCatPanel);
 
 
@@ -85,10 +90,10 @@ public class AddFeedPopup extends DialogBox implements ChangeHandler {
 		hp2.setSpacing(5);
 		hp2.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
 		addButton = new Button("Add feed");
-		addButton.addClickHandler(controller.handler);
+		addButton.addClickHandler(this);
 		closeButton = new Button("Close");
-		closeButton.addClickHandler(controller.handler);
-		
+		closeButton.addClickHandler(this);
+
 		hp2.add(addButton);
 		hp2.add(closeButton);
 		contents.add(hp2);
@@ -111,7 +116,7 @@ public class AddFeedPopup extends DialogBox implements ChangeHandler {
 
 	@Override
 	public void onChange(ChangeEvent event) {
-	
+
 		if (event.getSource() == categoryBox) {
 			int i = categoryBox.getSelectedIndex();
 			if (i + 1 == categoryBox.getItemCount()) {
@@ -122,4 +127,50 @@ public class AddFeedPopup extends DialogBox implements ChangeHandler {
 		}
 	}
 
+	@Override
+	public void onClick(ClickEvent event) {
+		Object sender = event.getSource();
+
+		if (sender == closeButton) {
+			this.hide();
+		} else if (sender == addButton) {
+			String cat = categoryBox.getItemText(categoryBox.getSelectedIndex());
+
+			if (categoryBox.getSelectedIndex() +1 == categoryBox.getItemCount()) {
+				cat = "Default";
+			}
+
+			String url =  addressField.getText().trim();
+			WebStorage.saveFeedCategoryToStorage(cat,url);
+			controller.sendAddressToServer(url);
+			this.hide();
+		} else if (sender == addCategoryButton) {
+			String cat = newCategoryField.getText().trim();
+			WebStorage.addCategoryToStorage(cat);
+			addCatPanel.setVisible(false);
+
+			categoryBox.insertItem(cat,categoryBox.getItemCount()-1);
+			categoryBox.setSelectedIndex(categoryBox.getItemCount()-2);
+		}
+	}
+	
+	
+	@Override
+	public void onKeyUp(KeyUpEvent event) {
+		if (event.getNativeKeyCode() == KeyCodes.KEY_ENTER) {
+			try {
+				String cat = categoryBox.getItemText(categoryBox.getSelectedIndex());
+				
+				if (categoryBox.getSelectedIndex()+1 == categoryBox.getItemCount()) 
+					cat = "Default";
+				
+				String url =  addressField.getText().trim();
+				WebStorage.saveFeedCategoryToStorage(cat, url);
+				controller.panel.sendAddressToServer(url);
+				this.hide();
+			} catch (Exception e) {
+				e.printStackTrace();
+			} 
+		}
+	}
 }

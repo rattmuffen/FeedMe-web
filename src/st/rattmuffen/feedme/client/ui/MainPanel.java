@@ -1,13 +1,19 @@
 package st.rattmuffen.feedme.client.ui;
 
+import org.apache.tools.ant.taskdefs.Javadoc.Html;
+
 import st.rattmuffen.feedme.client.FeedMe_web;
 import st.rattmuffen.feedme.shared.Feed;
 import st.rattmuffen.feedme.shared.FeedEntry;
 import st.rattmuffen.feedme.shared.FieldVerifier;
 
 import com.google.gwt.dom.client.Style.Unit;
+import com.google.gwt.event.dom.client.ClickEvent;
+import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ResizeEvent;
 import com.google.gwt.event.logical.shared.ResizeHandler;
+import com.google.gwt.safehtml.shared.SafeHtmlBuilder;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
 import com.google.gwt.user.cellview.client.CellList;
 import com.google.gwt.user.cellview.client.HasKeyboardSelectionPolicy.KeyboardSelectionPolicy;
 import com.google.gwt.user.client.Window;
@@ -19,18 +25,18 @@ import com.google.gwt.user.client.ui.Label;
 import com.google.gwt.user.client.ui.RootLayoutPanel;
 import com.google.gwt.user.client.ui.ScrollPanel;
 import com.google.gwt.user.client.ui.VerticalPanel;
+import com.google.gwt.user.client.ui.Widget;
 
-public class MainPanel extends DockLayoutPanel {
+public class MainPanel extends DockLayoutPanel implements ClickHandler {
 	
 	VerticalPanel menuPanel;
 
 	ScrollPanel sp;
 	HorizontalPanel titlePanel;
 
-	public Button addButton,removeAllButton;
+	public Button addButton,removeAllButton,shuffleButton;
 	public Label errorLabel,loadingLabel;
 	
-	public InputHandler handler;
 
 	public FeedTree feedTree;
 
@@ -45,18 +51,21 @@ public class MainPanel extends DockLayoutPanel {
 		super(Unit.PX);
 		controller = c;
 		
-		handler = new InputHandler(this);
-		addPopup = new AddFeedPopup(this);
-		editPopup = new EditFeedPopup(this);
+		addPopup = new AddFeedPopup(controller);
+		editPopup = new EditFeedPopup(controller);
 	}
 	
 	public void createAndShowGUI() {
-		addButton = new Button("Add...");
+
+		addButton = new Button("<i class=\"fa fa-plus-circle\"></i> Add...");
 		addButton.addStyleName("addButton");
-		addButton.addClickHandler(handler);
+		addButton.addClickHandler(this);
 		
-		removeAllButton = new Button("Remove all");
-		removeAllButton.addClickHandler(handler);
+		removeAllButton = new Button("<i class=\"fa fa-times-circle\"></i> Remove all");
+		removeAllButton.addClickHandler(this);
+		
+		shuffleButton = new Button("<i class=\"fa fa-random\"></i> Shuffle");
+		shuffleButton.addClickHandler(this);
 
 		feedTree = new FeedTree(controller,controller.feeds);
 
@@ -69,6 +78,7 @@ public class MainPanel extends DockLayoutPanel {
 		hp.addStyleName("center");
 		hp.setSpacing(4);
 		hp.add(addButton);
+		hp.add(shuffleButton);
 		hp.add(removeAllButton);
 		
 
@@ -79,6 +89,7 @@ public class MainPanel extends DockLayoutPanel {
 		errorLabel.addStyleName("serverResponseLabelError");
 		
 		loadingLabel = new Label();
+		
 		loadingLabel.setText("Loading feeds...");
 		loadingLabel.addStyleName("loadingLabel");
 		loadingLabel.setVisible(false);
@@ -116,9 +127,7 @@ public class MainPanel extends DockLayoutPanel {
 			this.remove(titlePanel);
 		
 		currentFeed = f;
-
 		titlePanel = new HorizontalPanel();
-		
 		HTML title = new HTML("<div id=\"feedTitle\"><img src=\"" + f.getImage() + "\" />" + 
 				f.getDescription() + "</div>");
 		titlePanel.add(title);
@@ -129,6 +138,8 @@ public class MainPanel extends DockLayoutPanel {
 		cellList.setRowCount(f.entries.size(), true);
 		cellList.setRowData(0, f.entries);
 		cellList.addStyleName("list");
+		
+		Window.setTitle("FeedMe - " + controller.getFeedTitle(f));
 
 		sp = new ScrollPanel(cellList);
 		this.addNorth(titlePanel, 60);
@@ -140,10 +151,9 @@ public class MainPanel extends DockLayoutPanel {
 		addButton.setEnabled(true);
 	}
 	
-	public void sendAddressToServer() throws IllegalArgumentException {
+	public void sendAddressToServer(String textToServer) throws IllegalArgumentException {
 		errorLabel.setText("");
-
-		String textToServer = addPopup.addressField.getText();
+		
 		if (!FieldVerifier.isValidAddress(textToServer)) {
 			errorLabel.setText("Please enter a valid address.");
 			return;
@@ -157,6 +167,8 @@ public class MainPanel extends DockLayoutPanel {
 			this.remove(sp);
 		if (titlePanel != null)
 			this.remove(titlePanel);
+		
+		Window.setTitle("FeedMe");
 	}
 
 	public void removeAllFeeds() {
@@ -166,6 +178,7 @@ public class MainPanel extends DockLayoutPanel {
 
 	public void showAllFeeds() {
 		controller.showAllFeeds();
+		Window.setTitle("FeedMe - All feeds");
 	}
 
 	public void updateTree() {
@@ -175,5 +188,20 @@ public class MainPanel extends DockLayoutPanel {
 	public void toggleLoading() {
 		feedTree.setVisible(!feedTree.isVisible());
 		loadingLabel.setVisible(!loadingLabel.isVisible());
+	}
+	
+
+
+	@Override
+	public void onClick(ClickEvent event) {
+		Widget sender = (Widget) event.getSource();
+
+		if (sender == addButton) {
+			createAndShowAddPopup();
+		} else if (sender == removeAllButton) {
+			removeAllFeeds();
+		} else if (sender == shuffleButton) {
+			controller.showShuffleFeeds();
+		}
 	}
 }

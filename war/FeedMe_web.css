@@ -2,12 +2,15 @@ body {
 	font-family: 'Roboto' !important;
 }
 
+a:link {color:#777777 !important;}
+a:visited {color:#777777 !important;} 
+
 h1 {
 	font-size: 48px;
 	font-weight: 400;
 	color: #777777;
 	font-family: 'Pacifico', cursive;
-	margin: 20px 0px 0px 0px;
+	margin: 0px 0px -20px 0px;
 	text-align: center;
 }
 
