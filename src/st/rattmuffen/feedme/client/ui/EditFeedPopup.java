@@ -26,10 +26,12 @@ public class EditFeedPopup extends DialogBox implements ChangeHandler, ClickHand
 
 	FeedMe_web controller;
 
-	Button editButton,closeButton,removeButton;
-	public TextBox titleField;
+	IconButton editButton,closeButton,removeButton,addCategoryButton;
+	public TextBox titleField,newCategoryField;
 	public CategoryBox categoryBox;
 	public CheckBox isFavoriteBox;
+	
+	HorizontalPanel addCatPanel;
 	
 	public Feed feed;
 	
@@ -67,7 +69,7 @@ public class EditFeedPopup extends DialogBox implements ChangeHandler, ClickHand
 
 		categoryBox = new CategoryBox(false);
 		categoryBox.addChangeHandler(this);
-		categoryBox.setSelectedIndex(0);
+		categoryBox.addItem("Add new category...");
 		categoryBox.setSelectedIndex(categoryBox.indexOf(feed.category));
 		
 		h = new HTML("Category:");
@@ -75,7 +77,23 @@ public class EditFeedPopup extends DialogBox implements ChangeHandler, ClickHand
 		hp.add(categoryBox);
 		contents.add(hp);
 		
-		
+		addCatPanel = new HorizontalPanel();
+		addCatPanel.setSpacing(5);
+
+
+		HTML h2 = new HTML("New category:");
+		addCatPanel.add(h2);
+
+		newCategoryField = new TextBox(); 
+		addCategoryButton = new IconButton("Add");
+		addCategoryButton.addClickHandler(this);
+
+		addCatPanel.add(newCategoryField);
+		addCatPanel.add(addCategoryButton);
+
+
+		contents.add(addCatPanel);
+
 		
 		
 		hp = new HorizontalPanel();
@@ -93,11 +111,11 @@ public class EditFeedPopup extends DialogBox implements ChangeHandler, ClickHand
 		HorizontalPanel hp2 = new HorizontalPanel();
 		hp2.setSpacing(5);
 		hp2.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-		editButton = new Button("<i class=\"fa fa-check-circle\"></i> Save");
+		editButton = new IconButton("Save","fa-check-circle");
 		editButton.addClickHandler(this);
-		removeButton = new Button("<i class=\"fa fa-times-circle\"></i> Remove");
+		removeButton = new IconButton("Remove","fa-times-circle");
 		removeButton.addClickHandler(this);
-		closeButton = new Button("<i class=\"fa fa-reply\"></i> Close");
+		closeButton = new IconButton("Close","fa-reply");
 		closeButton.addClickHandler(this);
 		
 		hp2.add(editButton);
@@ -119,12 +137,20 @@ public class EditFeedPopup extends DialogBox implements ChangeHandler, ClickHand
 
 		this.show();
 		titleField.setFocus(true);
+		addCatPanel.setVisible(false);
 		categoryBox.setSize(titleField.getOffsetWidth() + "px", titleField.getOffsetHeight() + "px");
 	}
 
 	@Override
 	public void onChange(ChangeEvent event) {
-
+		if (event.getSource() == categoryBox) {
+			int i = categoryBox.getSelectedIndex();
+			if (i + 1 == categoryBox.getItemCount()) {
+				addCatPanel.setVisible(true);
+			} else {
+				addCatPanel.setVisible(false);
+			}
+		}
 	}
 
 	@Override
@@ -176,9 +202,14 @@ public class EditFeedPopup extends DialogBox implements ChangeHandler, ClickHand
 			
 			this.hide();
 			controller.updateTree(feed);
+		} else if (sender == addCategoryButton) {
+			String cat = newCategoryField.getText().trim();
+			WebStorage.addCategoryToStorage(cat);
+			addCatPanel.setVisible(false);
+
+			categoryBox.insertItem(cat,categoryBox.getItemCount()-1);
+			categoryBox.setSelectedIndex(categoryBox.getItemCount()-2);
 		}
 	}
-
 }
-
 

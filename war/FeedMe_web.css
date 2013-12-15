@@ -3,7 +3,7 @@ body {
 }
 
 a:link {color:#777777 !important;}
-a:visited {color:#777777 !important;} 
+a:visited {color:#777777 !important;}
 
 h1 {
 	font-size: 48px;
@@ -35,7 +35,7 @@ h1 {
 	float: left;
 }
 
-.addButton {
+.iconButton {
 	font-family: 'Roboto', cursive !important;
 	display: block;
 	font-size: 16pt;

@@ -1,6 +1,7 @@
 package st.rattmuffen.feedme.client;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.ListIterator;
 
 import st.rattmuffen.feedme.client.ui.MainPanel;
@@ -16,6 +17,7 @@ public class FeedMe_web implements EntryPoint {
 
 	public final RssServiceAsync rssService = GWT.create(RssService.class);
 	public ArrayList<Feed> feeds;
+	public Feed currentFeed;
 
 	public MainPanel panel;
 
@@ -46,16 +48,15 @@ public class FeedMe_web implements EntryPoint {
 
 	public void setFeed(Feed f) {
 		if (f != null) {
+			currentFeed = f;
 			panel.setFeed(f);
-			System.out.println("Selecting feed " + f.title);
-
 			f.unread = 0;
 			WebStorage.saveDateToStorage(f.url);
 		} else {
 			panel.setEmpty();
 		}
 	}
-	
+
 	public String getFeedTitle(Feed f) {
 		String storedTitle = WebStorage.getFeedTitleFromStorage(f.url);
 		String feedTitle = f.title;
@@ -110,8 +111,6 @@ public class FeedMe_web implements EntryPoint {
 	}
 
 	public void removeFeed(Feed f) {
-		System.out.println("Removing " + f.title);
-
 		WebStorage.removeFeedFromStorage(f);
 		feeds.remove(f);
 		panel.feedTree.buildTree(this, feeds);
@@ -125,13 +124,12 @@ public class FeedMe_web implements EntryPoint {
 		ListIterator<Feed> it = feeds.listIterator();    
 		if(it.hasNext()) {  
 			Feed f = it.next();   
-			
+
 			if (f.url.equals(updFeed.url)) {
 				feeds.remove(f);
 				feeds.add(updFeed);
 			}
 		}  
-
 		panel.feedTree.buildTree(this, feeds);
 	}
 
@@ -191,30 +189,34 @@ public class FeedMe_web implements EntryPoint {
 		favFeeds.sort();
 		setFeed(favFeeds);
 	}
-	
+
 	public void showShuffleFeeds() {
-		Feed shuffledFeeds = new Feed();
-		shuffledFeeds.description = "Shuffled feeds";
-		shuffledFeeds.link = "";
-		shuffledFeeds.url = "";
-		shuffledFeeds.unread = 0;
-		shuffledFeeds.title = "Shuffled feeds";
+		Feed shuffledFeed = new Feed();
+		if (!currentFeed.description.endsWith("(shuffled)"))
+			shuffledFeed.description = currentFeed.description + " (shuffled)";
+		else
+			shuffledFeed.description = currentFeed.description;
+		shuffledFeed.link = "";
+		shuffledFeed.url = "";
+		shuffledFeed.unread = 0;
+		if (!getFeedTitle(currentFeed).endsWith("(shuffled)"))
+			shuffledFeed.title = getFeedTitle(currentFeed) + " (shuffled)";
+		else
+			shuffledFeed.title = getFeedTitle(currentFeed);
 
 		ArrayList<FeedEntry> allEntries = new ArrayList<FeedEntry>();
-		for (Feed f : feeds) {
-			for (FeedEntry fe : f.entries) {
-				allEntries.add(fe);
-			}
+		for (FeedEntry fe : currentFeed.entries) {
+			allEntries.add(fe);
 		}
-		
+
 		while (!allEntries.isEmpty()) {
 			int rand = (int) (Math.random() * allEntries.size());
 			FeedEntry entry = allEntries.get(rand);
-			shuffledFeeds.addEntry(entry);
+			shuffledFeed.addEntry(entry);
 			allEntries.remove(entry);
 		}
 
-		setFeed(shuffledFeeds);
+		setFeed(shuffledFeed);
 	}
 
 	public void removeAllFeeds() {
@@ -226,13 +228,7 @@ public class FeedMe_web implements EntryPoint {
 		}
 
 		WebStorage.clearStorage();
-
 		feedCopy.clear();
-
 		panel.feedTree.buildTree(this, feeds);
 	}
-
-
-
-
 }

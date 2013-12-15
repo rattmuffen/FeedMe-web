@@ -34,7 +34,7 @@ public class MainPanel extends DockLayoutPanel implements ClickHandler {
 	ScrollPanel sp;
 	HorizontalPanel titlePanel;
 
-	public Button addButton,removeAllButton,shuffleButton;
+	public IconButton addButton,removeAllButton,shuffleButton;
 	public Label errorLabel,loadingLabel;
 	
 
@@ -46,6 +46,8 @@ public class MainPanel extends DockLayoutPanel implements ClickHandler {
 	
 	AddFeedPopup addPopup;
 	EditFeedPopup editPopup;
+	
+	boolean shuffled = false;
 
 	public MainPanel(FeedMe_web c) {
 		super(Unit.PX);
@@ -57,14 +59,15 @@ public class MainPanel extends DockLayoutPanel implements ClickHandler {
 	
 	public void createAndShowGUI() {
 
-		addButton = new Button("<i class=\"fa fa-plus-circle\"></i> Add...");
-		addButton.addStyleName("addButton");
+		addButton = new IconButton("Add","fa-plus-circle");
 		addButton.addClickHandler(this);
 		
-		removeAllButton = new Button("<i class=\"fa fa-times-circle\"></i> Remove all");
+		removeAllButton = new IconButton("Remove all","fa-times-circle");
+		removeAllButton.addStyleName("menuButton");
 		removeAllButton.addClickHandler(this);
 		
-		shuffleButton = new Button("<i class=\"fa fa-random\"></i> Shuffle");
+		shuffleButton = new IconButton("Shuffle","fa-random");
+		shuffleButton.addStyleName("menuButton");
 		shuffleButton.addClickHandler(this);
 
 		feedTree = new FeedTree(controller,controller.feeds);

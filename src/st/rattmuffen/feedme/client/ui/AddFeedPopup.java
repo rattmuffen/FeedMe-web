@@ -24,7 +24,7 @@ public class AddFeedPopup extends DialogBox implements ChangeHandler, ClickHandl
 
 	FeedMe_web controller;
 
-	Button addButton,closeButton,addCategoryButton;
+	IconButton addButton,closeButton,addCategoryButton;
 	public TextBox addressField,newCategoryField;
 	public CategoryBox categoryBox;
 
@@ -76,7 +76,7 @@ public class AddFeedPopup extends DialogBox implements ChangeHandler, ClickHandl
 		addCatPanel.add(h2);
 
 		newCategoryField = new TextBox(); 
-		addCategoryButton = new Button("Add");
+		addCategoryButton = new IconButton("Add");
 		addCategoryButton.addClickHandler(this);
 
 		addCatPanel.add(newCategoryField);
@@ -89,9 +89,9 @@ public class AddFeedPopup extends DialogBox implements ChangeHandler, ClickHandl
 		HorizontalPanel hp2 = new HorizontalPanel();
 		hp2.setSpacing(5);
 		hp2.setHorizontalAlignment(HasHorizontalAlignment.ALIGN_RIGHT);
-		addButton = new Button("Add feed");
+		addButton = new IconButton("Add","fa-check-circle");
 		addButton.addClickHandler(this);
-		closeButton = new Button("Close");
+		closeButton = new IconButton("Close","fa-reply");
 		closeButton.addClickHandler(this);
 
 		hp2.add(addButton);
